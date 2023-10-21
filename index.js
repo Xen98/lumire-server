@@ -1,30 +1,31 @@
 import express from "express";
 import cors from "cors";
 import logger from "morgan";
-import { Server } from 'socket.io';
+import WebSocket from 'ws';
 import { createServer } from 'node:http';
 
 const port = process.env.PORT || 3000;
 
 const app = express();
+
 const server = createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: '*',
-  }
-});
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
+const wss = WebSocket.Server({ server });
 
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
+wss.on('connection', function connection(ws) {
+  console.log('A new client Connected!');
+  ws.send('Welcome New Client!');
+
+  ws.on('message', function incoming(message) {
+    console.log('received: %s', message);
+
+    wss.clients.forEach(function each(client) {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(message);
+      }
+    });
+    
   });
-  
-  socket.on('message', (msg) => {
-    console.log(msg);
-    console.log('message: ' + msg.message);
-  })
 });
 
 
@@ -48,7 +49,6 @@ app.use(cors({
 
 app.use(logger("dev"));
 
-// Mandar JSON
 app.get("/api", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   res.json({ message: "Hello World" });
