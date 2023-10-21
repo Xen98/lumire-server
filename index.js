@@ -10,7 +10,7 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:4321',
+    origin: '*',
   }
 });
 
@@ -22,6 +22,7 @@ io.on('connection', (socket) => {
   });
   
   socket.on('message', (msg) => {
+    console.log(msg);
     console.log('message: ' + msg.message);
   })
 });
