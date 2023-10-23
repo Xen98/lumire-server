@@ -1,39 +1,13 @@
 import express from "express";
 import cors from "cors";
 import logger from "morgan";
-import { WebSocketServer } from 'ws';
 import { createServer } from 'node:http';
-
+import websocketServer from "./websocket.js";
 const port = process.env.PORT || 3000;
 
 const app = express();
 
 const server = createServer(app);
-
-const wss = new WebSocketServer({ server });
-
-wss.on('connection', (ws) => {
-  ws.on('error', console.error);
-
-  console.log('Nuevo cliente Conectado');
-
-  ws.send('Bienvenido al websocket');
-
-  ws.on('message', (message) => {
-    
-    console.log(`mensaje recibido: ${message}`);
-
-    wss.clients.forEach(client => {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(message);
-      }
-    });
-  });
-
-  ws.on('close', () => {
-    console.log('client disconnected');
-  });
-});
 
 app.use(cors({
   origin: (origin, callback) => {
@@ -63,3 +37,5 @@ app.get("/api", (req, res) => {
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);
 });
+
+websocketServer(server);
