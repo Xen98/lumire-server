@@ -24,7 +24,7 @@ export default async (expressServer) => {
       console.log(`mensaje recibido: ${message}`);
   
       websocketServer.clients.forEach(client => {
-        if (client !== ws && client.readyState === WebSocket.OPEN) {
+        if (client !== ws && client.readyState === websocketServer.OPEN) {
           client.send(message);
         }
       });
