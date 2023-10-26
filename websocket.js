@@ -26,20 +26,26 @@ export default async (expressServer) => {
     ws.on('error', console.error);
   
     //console.log('Nuevo cliente Conectado');
-  
-    ws.send('Bienvenido al websocket');
+
+    const message = {
+      pwm: 25
+    };
+
+    ws.send(JSON.stringify(message));
   
     ws.on('message', (message) => {
       
       const data = JSON.parse(message);
 
       console.log(`mensaje recibido: ${data.pwm}`);
+
+      ws.send(message);
   
-      websocketServer.clients.forEach(client => {
-        if (client !== ws && client.readyState === websocketServer.OPEN) {
-          client.send(message);
-        }
-      });
+      // websocketServer.clients.forEach(client => {
+      //   if (client !== ws && client.readyState === websocketServer.OPEN) {
+      //     client.send(message);
+      //   }
+      // });
     });
   
     ws.on('close', () => {
