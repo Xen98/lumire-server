@@ -24,6 +24,10 @@ export default async (expressServer) => {
 
   websocketServer.on('connection', (ws) => {
     ws.on('error', console.error);
+    const paMiGente = {
+      "pwm": 25
+    }
+    ws.send(JSON.stringify(paMiGente));
   
     //console.log('Nuevo cliente Conectado');
   
@@ -36,8 +40,13 @@ export default async (expressServer) => {
       ws.send(message);
   
       websocketServer.clients.forEach(client => {
-        if (client !== ws && client.readyState === websocketServer.OPEN) {
-          client.send(message);
+        //console.log(client.readyState);
+        console.log(client !== ws, client.readyState === 1);
+        console.log("-------------------");
+        console.log(message);
+        if (client !== ws && client.readyState === 1) {
+          console.log("data: ", data);
+          client.send(JSON.stringify(data));
         }
       });
     });
