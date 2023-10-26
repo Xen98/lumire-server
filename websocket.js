@@ -26,12 +26,6 @@ export default async (expressServer) => {
     ws.on('error', console.error);
   
     //console.log('Nuevo cliente Conectado');
-
-    const message = {
-      pwm: 25
-    };
-
-    ws.send(JSON.stringify(message));
   
     ws.on('message', (message) => {
       
@@ -41,11 +35,11 @@ export default async (expressServer) => {
 
       ws.send(message);
   
-      // websocketServer.clients.forEach(client => {
-      //   if (client !== ws && client.readyState === websocketServer.OPEN) {
-      //     client.send(message);
-      //   }
-      // });
+      websocketServer.clients.forEach(client => {
+        if (client !== ws && client.readyState === websocketServer.OPEN) {
+          client.send(message);
+        }
+      });
     });
   
     ws.on('close', () => {
