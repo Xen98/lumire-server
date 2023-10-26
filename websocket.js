@@ -7,7 +7,17 @@ export default async (expressServer) => {
   });
 
   expressServer.on("upgrade", (request, socket, head) => {
+    //console.log("me siento como messi");
+    //console.log(request);
+    //console.log(socket);
+    //console.log(head);
+    //const peroElEstaConAdidasYYoConNaiki = websocketServer.shouldHandle(request);
+    ///console.log(peroElEstaConAdidasYYoConNaiki);
+    websocketServer.on("wsClientError", (error, socket, request) => {
+      console.log(error);
+    });
     websocketServer.handleUpgrade(request, socket, head, (websocket) => {
+      //console.log("cristiano ronaldoooooooooo");
       websocketServer.emit("connection", websocket, request);
     });
   });
@@ -15,13 +25,15 @@ export default async (expressServer) => {
   websocketServer.on('connection', (ws) => {
     ws.on('error', console.error);
   
-    console.log('Nuevo cliente Conectado');
+    //console.log('Nuevo cliente Conectado');
   
     ws.send('Bienvenido al websocket');
   
     ws.on('message', (message) => {
       
-      console.log(`mensaje recibido: ${message}`);
+      const data = JSON.parse(message);
+
+      console.log(`mensaje recibido: ${data.pwm}`);
   
       websocketServer.clients.forEach(client => {
         if (client !== ws && client.readyState === websocketServer.OPEN) {
