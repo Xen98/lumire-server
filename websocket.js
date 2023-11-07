@@ -7,17 +7,10 @@ export default async (expressServer) => {
   });
 
   expressServer.on("upgrade", (request, socket, head) => {
-    //console.log("me siento como messi");
-    //console.log(request);
-    //console.log(socket);
-    //console.log(head);
-    //const peroElEstaConAdidasYYoConNaiki = websocketServer.shouldHandle(request);
-    ///console.log(peroElEstaConAdidasYYoConNaiki);
     websocketServer.on("wsClientError", (error, socket, request) => {
       console.log(error);
     });
     websocketServer.handleUpgrade(request, socket, head, (websocket) => {
-      //console.log("cristiano ronaldoooooooooo");
       websocketServer.emit("connection", websocket, request);
     });
   });
@@ -29,13 +22,11 @@ export default async (expressServer) => {
     }
     ws.send(JSON.stringify(paMiGente));
   
-    //console.log('Nuevo cliente Conectado');
-  
     ws.on('message', (message) => {
       
-      const data = JSON.parse(message);
+      // const data = JSON.parse(message);
 
-      console.log(`mensaje recibido: ${data.pwm}`);
+      console.log(`mensaje recibido: ${message}`);
 
       ws.send(message);
   
