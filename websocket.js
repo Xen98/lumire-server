@@ -18,14 +18,19 @@ export default async (expressServer) => {
   websocketServer.on('connection', (ws) => {
     ws.on('error', console.error);
 
+    // let resp = {lux: 125, pwr: true, led: 255, mov: true}
+    // ws.send(JSON.stringify(resp));
+
     ws.on('message', (message) => {
       console.log(`mensaje recibido: ${message}`);
 
       ws.send(message);
+      
+      const messageObj = JSON.parse(message);
   
       websocketServer.clients.forEach(client => {
         if (client !== ws && client.readyState === 1) {
-          client.send(JSON.stringify(message));
+          client.send(JSON.stringify(messageObj));
         }
       });
     });
