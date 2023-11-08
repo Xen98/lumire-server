@@ -25,7 +25,7 @@ export default async (expressServer) => {
   
       websocketServer.clients.forEach(client => {
         if (client !== ws && client.readyState === 1) {
-          client.send(message);
+          client.send(JSON.stringify(message));
         }
       });
     });
